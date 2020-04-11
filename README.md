@@ -1,4 +1,4 @@
-### fastiota
+### fastiota [![Build Status](https://travis-ci.com/dnbaker/fastiota.svg?branch=master)](https://travis-ci.com/dnbaker/fastiota) 
 
 For generating fast ranges of integers using SIMD types. (My typical use case is for using sorting a set of values by index rather than moving the values).
 
