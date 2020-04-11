@@ -49,7 +49,7 @@ IT *iota(IT *start, size_t nelem, IT2 firstv=IT(0)) {
     while(ptr < end) *ptr++ = firstv++;
     return start;
 }
-template<typename Iterator, typename Integer>
+template<typename Iterator, typename Integer, typename Integer2>
 void fastiota(Iterator start, Iterator stop, Integer sv=0) {
     iota(&*start, std::distance(start, stop), sv);
 }
