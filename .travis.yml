@@ -1,0 +1,50 @@
+sudo: false
+language: cpp
+compiler:
+  - gcc
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-6
+    - gcc-6
+install:
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 --slave /usr/bin/g++ g++ /usr/bin/g++-6
+script:
+  - gcc --version
+  - g++ --version
+  - make
+  - ./testfastiota
+  - ./testfastiotaho
+  - ./testfastiota_c
+  - ./testfastiota_cho
+  - make clean
+  - make CXXFLAGS='-mno-avx2 -mno-sse2'
+  - make
+  - ./testfastiota
+  - ./testfastiotaho
+  - ./testfastiota_c
+  - ./testfastiota_cho
+  - make clean
+  - make CXXFLAGS='-mno-avx2 -msse2'
+  - ./testfastiota
+  - ./testfastiotaho
+  - ./testfastiota_c
+  - ./testfastiota_cho
+  - make clean
+  - make CXXFLAGS='-mavx2'
+  - ./testfastiota
+  - ./testfastiotaho
+  - ./testfastiota_c
+  - ./testfastiota_cho
+  - make clean
+  - make CXXFLAGS='-mavx512f'
+  - ./testfastiota
+  - ./testfastiotaho
+  - ./testfastiota_c
+  - ./testfastiota_cho
+notifications:
+    slack: jhu-genomics:BbHYSks7DhOolq80IYf6m9oe
+    rooms:
+      - jhu-genomics:BbHYSks7DhOolq80IYf6m9oe#libsketch

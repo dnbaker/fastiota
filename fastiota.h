@@ -15,6 +15,10 @@ FASTIOTA_EXPORT uint32_t *fastiota32(uint32_t *start, size_t nelem, uint32_t sv)
 FASTIOTA_EXPORT int32_t *fastiota32i(int32_t *start, size_t nelem, int32_t sv);
 FASTIOTA_EXPORT uint64_t *fastiota64(uint64_t *start, size_t nelem, uint64_t sv);
 FASTIOTA_EXPORT int64_t *fastiota64i(int64_t *start, size_t nelem, int64_t sv);
+FASTIOTA_EXPORT uint32_t *fastiota32_inc(uint32_t *start, size_t nelem, uint32_t sv, uint32_t inc);
+FASTIOTA_EXPORT int32_t *fastiota32i_inc(int32_t *start, size_t nelem, int32_t sv, int32_t inc);
+FASTIOTA_EXPORT uint64_t *fastiota64_inc(uint64_t *start, size_t nelem, uint64_t sv, uint64_t inc);
+FASTIOTA_EXPORT int64_t *fastiota64i_inc(int64_t *start, size_t nelem, int64_t sv, int64_t inc);
 #ifdef __cplusplus
 }
 #endif
@@ -24,29 +28,48 @@ FASTIOTA_EXPORT int64_t *fastiota64i(int64_t *start, size_t nelem, int64_t sv);
 #endif
 
 #ifdef __cplusplus
+#include <array>
+
 namespace fastiota {
-template<typename IT, typename IT2>
-IT *iota(IT *start, size_t nelem, IT2 firstv=IT(0)) {
+template<typename IT, typename IT2=IT, typename IT3=IT2>
+IT *iota(IT *start, size_t nelem, IT2 firstv=IT(0), IT3 inc=IT3(1)) {
     if(sizeof(IT) == 4) {
-        return reinterpret_cast<IT *>(fastiota32(reinterpret_cast<uint32_t *>(start), nelem, firstv));
+        return reinterpret_cast<IT *>(fastiota32_inc(reinterpret_cast<uint32_t *>(start), nelem, firstv, inc));
     }
     if(sizeof(IT) == 8) {
-        return reinterpret_cast<IT *>(fastiota64(reinterpret_cast<uint64_t *>(start), nelem, firstv));
+        return reinterpret_cast<IT *>(fastiota64_inc(reinterpret_cast<uint64_t *>(start), nelem, firstv, inc));
     }
-    IT *ptr = start, *end = start + nelem;
-    while(ptr + 8 <= end) {
-        ptr[0] = firstv;
-        ptr[1] = firstv + 1;
-        ptr[2] = firstv + 2;
-        ptr[3] = firstv + 3;
-        ptr[4] = firstv + 4;
-        ptr[5] = firstv + 5;
-        ptr[6] = firstv + 6;
-        ptr[7] = firstv + 7;
-        ptr += 8;
-        firstv += 8;
+    IT *ptr = start;
+    const IT *const end = start + nelem;
+    if(inc == 1) {
+        while(ptr + 8 <= end) {
+            ptr[0] = firstv;
+            ptr[1] = firstv + 1;
+            ptr[2] = firstv + 2;
+            ptr[3] = firstv + 3;
+            ptr[4] = firstv + 4;
+            ptr[5] = firstv + 5;
+            ptr[6] = firstv + 6;
+            ptr[7] = firstv + 7;
+            ptr += 8;
+            firstv += 8;
+        }
+        while(ptr < end) *ptr++ = firstv++;
+    } else {
+        const std::array<const IT, 8> tmp {IT(0), IT(1) * inc, IT(2) * inc, IT(3) * inc, IT(4) * inc, IT(5) * inc, IT(6) * inc, IT(7) * inc};
+        const IT blockinc = 8 * inc;
+        for(const IT blockinc = 8 * inc;ptr + 8 <= end;ptr += 8, firstv += blockinc) {
+            ptr[0] = firstv;
+            ptr[1] = firstv + tmp[1];
+            ptr[2] = firstv + tmp[2];
+            ptr[3] = firstv + tmp[3];
+            ptr[4] = firstv + tmp[4];
+            ptr[5] = firstv + tmp[5];
+            ptr[6] = firstv + tmp[6];
+            ptr[7] = firstv + tmp[7];
+        }
+        while(ptr < end) *ptr++ = (firstv += inc);
     }
-    while(ptr < end) *ptr++ = firstv++;
     return start;
 }
 template<typename Iterator, typename Integer, typename Integer2>

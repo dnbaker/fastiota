@@ -25,8 +25,8 @@ extern "C" {
 
 
 FASTIOTA_EXPORT uint32_t *fastiota32(uint32_t *start, size_t nelem, uint32_t sv) {
-#if __AVX512F__
     uint32_t *const end = start + nelem, *const origstart = start;
+#if __AVX512F__
     __m512i m = init_start(_mm512_set_epi32, sv);
     const __m512i inc = _mm512_set1_epi32(sizeof(m) / sizeof(uint32_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -46,7 +46,6 @@ FASTIOTA_EXPORT uint32_t *fastiota32(uint32_t *start, size_t nelem, uint32_t sv)
     }
     sv += (start - origstart);
 #elif __AVX2__
-    uint32_t *const end = start + nelem, *const origstart = start;
     __m256i m = init_start(_mm256_set_epi32, sv);
     const __m256i inc = _mm256_set1_epi32(sizeof(m) / sizeof(uint32_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -66,7 +65,6 @@ FASTIOTA_EXPORT uint32_t *fastiota32(uint32_t *start, size_t nelem, uint32_t sv)
     }
     sv += (start - origstart);
 #elif __SSE2__
-    uint32_t *const end = start + nelem, *const origstart = start;
     __m128i m = init_start(_mm_set_epi32, sv);
     const __m128i inc = _mm_set1_epi32(sizeof(m) / sizeof(uint32_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -95,8 +93,8 @@ FASTIOTA_EXPORT int32_t *fastiota32i(int32_t *start, size_t nelem, int32_t sv)
     return (int32_t *)fastiota32((uint32_t *)start, nelem, sv);
 }
 FASTIOTA_EXPORT uint64_t *fastiota64(uint64_t *start, size_t nelem, uint64_t sv) {
-#if __AVX512F__
     uint64_t *const end = start + nelem, *const origstart = start;
+#if __AVX512F__
     __m512i m = init_start64(_mm512_set_epi64, sv);
     const __m512i inc = _mm512_set1_epi64(sizeof(m) / sizeof(uint64_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -116,7 +114,6 @@ FASTIOTA_EXPORT uint64_t *fastiota64(uint64_t *start, size_t nelem, uint64_t sv)
     }
     sv += (start - origstart);
 #elif __AVX2__
-    uint64_t *const end = start + nelem, *const origstart = start;
     __m256i m = init_start64(_mm256_set_epi64x, sv);
     const __m256i inc = _mm256_set1_epi64x(sizeof(m) / sizeof(uint64_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -136,7 +133,6 @@ FASTIOTA_EXPORT uint64_t *fastiota64(uint64_t *start, size_t nelem, uint64_t sv)
     }
     sv += (start - origstart);
 #elif __SSE2__
-    uint64_t *const end = start + nelem, *const origstart = start;
     __m128i m = init_start64(_mm_set_epi64x, sv);
     const __m128i inc = _mm_set1_epi64x(sizeof(m) / sizeof(uint64_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -166,8 +162,9 @@ FASTIOTA_EXPORT int64_t *fastiota64i(int64_t *start, size_t nelem, int64_t sv)
 }
 
 FASTIOTA_EXPORT uint32_t *fastiota32_inc(uint32_t *start, size_t nelem, uint32_t sv, uint32_t incv) {
-#if __AVX512F__
+    if(incv == 1) return fastiota32(start, nelem, sv);
     uint32_t *const end = start + nelem, *const origstart = start;
+#if __AVX512F__
     __m512i m = init_start_val(_mm512_set_epi32, sv, incv);
     const __m512i inc = _mm512_set1_epi32(sizeof(m) / sizeof(uint32_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -187,7 +184,6 @@ FASTIOTA_EXPORT uint32_t *fastiota32_inc(uint32_t *start, size_t nelem, uint32_t
     }
     sv += (start - origstart);
 #elif __AVX2__
-    uint32_t *const end = start + nelem, *const origstart = start;
     __m256i m = init_start_val(_mm256_set_epi32, sv, incv);
     const __m256i inc = _mm256_set1_epi32(sizeof(m) / sizeof(uint32_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -207,7 +203,6 @@ FASTIOTA_EXPORT uint32_t *fastiota32_inc(uint32_t *start, size_t nelem, uint32_t
     }
     sv += (start - origstart);
 #elif __SSE2__
-    uint32_t *const end = start + nelem, *const origstart = start;
     __m128i m = init_start_val(_mm_set_epi32, sv, incv);
     const __m128i inc = _mm_set1_epi32(sizeof(m) / sizeof(uint32_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -232,8 +227,9 @@ FASTIOTA_EXPORT uint32_t *fastiota32_inc(uint32_t *start, size_t nelem, uint32_t
 }
 
 FASTIOTA_EXPORT uint64_t *fastiota64_inc(uint64_t *start, size_t nelem, uint64_t sv, uint64_t incv) {
-#if __AVX512F__
+    if(incv == 1) return fastiota64(start, nelem, sv);
     uint64_t *const end = start + nelem, *const origstart = start;
+#if __AVX512F__
     __m512i m = init_start_val64(_mm512_set_epi64, sv, incv);
     const __m512i inc = _mm512_set1_epi64(sizeof(m) / sizeof(uint64_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -253,7 +249,6 @@ FASTIOTA_EXPORT uint64_t *fastiota64_inc(uint64_t *start, size_t nelem, uint64_t
     }
     sv += (start - origstart);
 #elif __AVX2__
-    uint64_t *const end = start + nelem, *const origstart = start;
     __m256i m = init_start_val64(_mm256_set_epi64x, sv, incv);
     const __m256i inc = _mm256_set1_epi64x(sizeof(m) / sizeof(uint64_t));
     if((uint64_t)start % sizeof(m) == 0) {
@@ -273,7 +268,6 @@ FASTIOTA_EXPORT uint64_t *fastiota64_inc(uint64_t *start, size_t nelem, uint64_t
     }
     sv += (start - origstart);
 #elif __SSE2__
-    uint64_t *const end = start + nelem, *const origstart = start;
     __m128i m = init_start_val64(_mm_set_epi64x, sv, incv);
     const __m128i inc = _mm_set1_epi64x(sizeof(m) / sizeof(uint64_t));
     if((uint64_t)start % sizeof(m) == 0) {
