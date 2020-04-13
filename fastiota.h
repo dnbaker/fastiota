@@ -24,7 +24,7 @@ FASTIOTA_EXPORT int64_t *fastiota64i_inc(int64_t *start, size_t nelem, int64_t s
 #endif
 
 #ifdef SINGLE_HEADER_FAST_IOTA
-#include <fastiota.c>
+#include "./fastiota.c"
 #endif
 
 #ifdef __cplusplus
@@ -32,7 +32,7 @@ FASTIOTA_EXPORT int64_t *fastiota64i_inc(int64_t *start, size_t nelem, int64_t s
 
 namespace fastiota {
 template<typename IT, typename IT2=IT, typename IT3=IT2>
-IT *iota(IT *start, size_t nelem, IT2 firstv=IT(0), IT3 inc=IT3(1)) {
+IT *iota(IT *start, size_t nelem, IT2 firstv=0, IT3 inc=1) {
     if(sizeof(IT) == 4) {
         return reinterpret_cast<IT *>(fastiota32_inc(reinterpret_cast<uint32_t *>(start), nelem, firstv, inc));
     }
@@ -76,7 +76,11 @@ template<typename Iterator, typename Integer, typename Integer2>
 void fastiota(Iterator start, Iterator stop, Integer sv=0) {
     iota(&*start, std::distance(start, stop), sv);
 }
+template<typename IT, typename IT2=IT, typename IT3=IT2, typename IT4=IT3>
+IT *iota(IT *start, IT2 *stop, IT3 firstv=0, IT4 inc=1) {
+    return iota(start, stop - start, firstv, inc);
 }
+} // namespace fastiota
 #endif
 
 #endif /* FAST_IOTA_H__ */
