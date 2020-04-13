@@ -57,7 +57,6 @@ IT *iota(IT *start, size_t nelem, IT2 firstv=0, IT3 inc=1) {
         while(ptr < end) *ptr++ = firstv++;
     } else {
         const std::array<const IT, 8> tmp {IT(0), IT(1) * inc, IT(2) * inc, IT(3) * inc, IT(4) * inc, IT(5) * inc, IT(6) * inc, IT(7) * inc};
-        const IT blockinc = 8 * inc;
         for(const IT blockinc = 8 * inc;ptr + 8 <= end;ptr += 8, firstv += blockinc) {
             ptr[0] = firstv;
             ptr[1] = firstv + tmp[1];

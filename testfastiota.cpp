@@ -15,6 +15,6 @@ int main() {
     std::vector<uint64_t> d64(n), dc64(n);
     fastiota::iota(d64.data(), d64.size(), 420);
     std::iota(dc64.data(), dc64.data() + n, uint64_t(420));
-    for(auto s = d64.data(); s < d64.data() + n; ++s) fprintf(stderr, "%lu,", *s);
+    for(auto s = d64.data(); s < d64.data() + n; ++s) fprintf(stderr, "%lu,", (unsigned long)*s);
     assert(std::equal(d64.begin(), d64.end(), d64.begin()));
 }
